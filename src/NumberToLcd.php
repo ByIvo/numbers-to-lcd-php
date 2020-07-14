@@ -64,35 +64,56 @@ NUMBER
 		$this->number = $number;
 	}
 
-	public function print(): string {
-		$printedLines = $this->getLineArrayOfPrintedNumber();
+	public function print(int $width = 1, int $height = 1): string {
+		if ($width <= 0 || $height <= 0) throw new \LogicException('The width and height should be greater than 0');
 
-		$firstLine = $this->renderLineOfNumber($printedLines, 0);
-		$secondLine = $this->renderLineOfNumber($printedLines, 1);
-		$thirdLine = $this->renderLineOfNumber($printedLines, 2);
+		$printedLines = $this->getLineArrayOfPrintedNumber($width, $height);
 
 		$numberAsLcdStyle = '';
-		$numberAsLcdStyle .= $firstLine . PHP_EOL;
-		$numberAsLcdStyle .= $secondLine . PHP_EOL;
-		$numberAsLcdStyle .= $thirdLine;
+
+		for ($i=0; $i < sizeof($printedLines[0]); $i++) {
+			if (!empty($numberAsLcdStyle)) {
+				$numberAsLcdStyle .= PHP_EOL;
+			}
+
+			$numberAsLcdStyle .= $this->renderLineOfNumber($printedLines, $i);
+		}
 
 		return $numberAsLcdStyle;
 	}
 
-	private function getLineArrayOfPrintedNumber(): array {
+	private function getLineArrayOfPrintedNumber(int $width, int $height): array {
 		$numberAsString = strval($this->number);
 
 		$numberSplittedByLines = [];
 		foreach (str_split($numberAsString) as $digit) {
 			$digitPrint = self::LCD_CHARACTERS[ $digit ];
-			$numberSplittedByLines[] = $this->extractLinesOfTheDigit($digitPrint);
+			$numberSplittedByLines[] = $this->extractLinesOfTheDigit($digitPrint, $width, $height);
 		}
 
 		return $numberSplittedByLines;
 	}
 
-	private function extractLinesOfTheDigit(string $printedDigit): array {
-		return mb_split(PHP_EOL, $printedDigit);
+	private function extractLinesOfTheDigit(string $printedDigit, int $width, int $height): array {
+		$lines = mb_split(PHP_EOL, $printedDigit);
+
+		$firstBaseLine = $lines[0];
+		$secondBaseLine = $lines[1];
+		$thirdBaseLine = $lines[2];
+
+		$scaledLines[] = $firstBaseLine[0] . str_pad('', $width, $firstBaseLine[1]) . $firstBaseLine[2];
+
+		for ($i=0; $i < $height - 1; $i++) {
+			$scaledLines[] = $secondBaseLine[0] . str_pad('', $width, ' ') . $secondBaseLine[2];
+		}
+		$scaledLines[] = $secondBaseLine[0] . str_pad('', $width, $secondBaseLine[1]) . $secondBaseLine[2];
+
+		for ($i = 0; $i < $height - 1; $i++) {
+			$scaledLines[] = $thirdBaseLine[0] . str_pad('', $width, ' ') . $thirdBaseLine[2];
+		}
+		$scaledLines[] = $thirdBaseLine[0] . str_pad('', $width, $thirdBaseLine[1]) . $thirdBaseLine[2];
+
+		return $scaledLines;
 	}
 
 	private function renderLineOfNumber(array $numberSplitByLines, int $lineToBeRendered): string {
