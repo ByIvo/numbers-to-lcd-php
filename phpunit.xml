@@ -2,8 +2,8 @@
 <phpunit bootstrap="./vendor/autoload.php">
 
     <testsuites>
-        <testsuite name="Dojo PHP">
-            <directory>./test</directory>
+        <testsuite name="The project's test suite">
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
 

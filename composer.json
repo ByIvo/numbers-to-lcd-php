@@ -1,22 +1,25 @@
 {
-    "name": "byivo/php-dojo",
+    "name": "byivo/number-to-lcd",
+    "description": "",
+    "type": "project",
+    "license": "MIT",
     "authors": [
         {
-            "name": "Ivo",
+            "name": "ByIvo",
             "email": "irbatistela@gmail.com"
         }
     ],
-    "require-dev": {
-        "phpunit/phpunit": "^7.5"
-    },
     "autoload": {
         "psr-4": {
-            "DojoPHP\\": "src/"
+            "NumberToLcd\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Test\\DojoPHP\\": "test/"
+            "Test\\NumberToLcd\\": "test/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.5"
     }
 }
